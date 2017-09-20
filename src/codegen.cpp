@@ -1,28 +1,30 @@
 #include "utility.hpp"
-#include "codegen.hpp"
 #include "ast.hpp"
 
-std::string convert_to_xelatex(Paragraph const& paragraph) {
+std::string Statement::to_xelatex() const {
+    return content;
+}
+
+std::string Paragraph::to_xelatex() const {
     std::string result = R"(\par )";
-    for (auto const& statement : paragraph.statements)
-        result += statement;
-    result += "\n";
+    for (auto const& content : contents)
+        result += content->to_xelatex() + "\n";
     return result;
 }
 
-std::string convert_to_xelatex(Section const& section) {
+std::string Section::to_xelatex() const {
     std::string result = "";
-    result += util::format("\\section{{}}\n", section.title);
-    for (auto const& content : section.contents)
-        result += convert_to_xelatex(content);
+    result += util::format("\\section{{}}\n", title);
+    for (auto const& content : contents)
+        result += content->to_xelatex();
     return result;
 }
 
-std::string convert_to_xelatex(Article const& article) {
+std::string Article::to_xelatex() const {
     std::string result = "\\documentclass[a4paper]{article}\n";
-    result += util::format("\\title{{}}\n", article.title);
-    result += util::format("\\author{{}}\n", article.author);
-    result += util::format("\\date{{}}\n", article.date);
+    result += util::format("\\title{{}}\n", title);
+    result += util::format("\\author{{}}\n", author);
+    result += util::format("\\date{{}}\n", date);
 
     result += "\\usepackage{indentfirst}\n";
     result += "\\usepackage{xltxtra}\n";
@@ -35,8 +37,8 @@ std::string convert_to_xelatex(Article const& article) {
     result += "\\XeTeXlinebreaklocale \"ja\"\n";
 
     result += "\\begin{document}\n";
-    for (auto const& section : article.sections)
-        result += convert_to_xelatex(section);
+    for (auto const& section : sections)
+        result += section->to_xelatex();
     result += "\\end{document}\n";
     return result;
 }

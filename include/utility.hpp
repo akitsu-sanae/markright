@@ -2,6 +2,7 @@
 #define MARKRIGHT_UTILITY_HPP
 
 #include <string>
+#include <memory>
 #include <stdexcept>
 
 namespace std {
@@ -23,6 +24,8 @@ inline static std::string format(std::string const& text, Head const& head, Tail
     return text.substr(0, pos) + std::to_string(head) + format(rest, tail ...);
 }
 
+template<typename T>
+using ptr = std::unique_ptr<T>;
 
 }
 

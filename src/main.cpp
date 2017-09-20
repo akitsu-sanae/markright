@@ -3,7 +3,6 @@
 
 #include "ast.hpp"
 #include "parser.hpp"
-#include "codegen.hpp"
 
 void print_usage(char const* name) {
     std::cout << "usage: " << name << " [filename]" << std::endl;
@@ -16,6 +15,6 @@ int main(int argc, char* argv[]) {
     }
 
     Parser parser{std::ifstream{argv[1]}};
-    std::cout << convert_to_xelatex(parser.parse()) << std::endl;
+    std::cout << parser.parse()->to_xelatex() << std::endl;
 }
 

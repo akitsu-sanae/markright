@@ -23,22 +23,22 @@ Parser::Parser(std::ifstream ifs) {
     }
 }
 
-Article Parser::parse() {
+util::ptr<Article> Parser::parse() {
     return parse_article();
 }
 
-Article Parser::parse_article() {
+util::ptr<Article> Parser::parse_article() {
 
-    Article article;
+    auto article = std::make_unique<Article>();
 
     // title, author, date
     while (!input.empty() && input.front()[0] == '%') {
-        add_description(article, input.front());
+        add_description(*article, input.front());
         input.pop_front();
     }
 
     while (!input.empty() && input.front()[0] == '#')
-        article.sections.push_back(parse_section());
+        article->sections.push_back(parse_section());
 
     if (!input.empty())
         throw std::runtime_error{"unparsed: " + input.front()};
@@ -46,23 +46,23 @@ Article Parser::parse_article() {
    return article;
 }
 
-Section Parser::parse_section() {
-    Section section;
+util::ptr<Section> Parser::parse_section() {
+    auto section = std::make_unique<Section>();
     input.front().erase(0, 1); // first is '#'
-    section.title = input.front();
+    section->title = input.front();
     input.pop_front();
 
     while (!input.empty() && input.front()[0] == ' ')
-        section.contents.push_back(parse_paragraph());
+        section->contents.push_back(parse_paragraph());
 
     return section;
 }
 
-Paragraph Parser::parse_paragraph() {
-    Paragraph paragraph;
+util::ptr<Paragraph> Parser::parse_paragraph() {
+    auto paragraph = std::make_unique<Paragraph>();
     input.front().erase(0, 1); // first is ' '
     while (!input.empty() && input.front()[0] != ' ' && input.front()[0] != '#') {
-        paragraph.statements.push_back(input.front());
+        paragraph->contents.push_back(std::make_unique<Statement>(input.front()));
         input.pop_front();
     }
     return paragraph;
