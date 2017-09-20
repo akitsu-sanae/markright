@@ -3,6 +3,7 @@
 ;    comment
 ;    title/author/date description
 ;    section
+;    paragraph
 ;
 %title born
 %author akitsu sanae
@@ -10,9 +11,11 @@
 
 # here is title of Section
 
-here is contents
+ here is contents
 
 # 2nd Section
 
-neko ni naritai
+ this is 1st paragraph.
+paragraph begin with a white space. so, this line is not new paragraph.
+ this is new paragraph
 

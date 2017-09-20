@@ -4,14 +4,16 @@
 #include <string>
 #include <vector>
 
+struct Paragraph {
+    std::vector<std::string> statements;
+};
+
 struct Section {
-    std::string to_string() const;
     std::string title;
-    std::string content;
+    std::vector<Paragraph> contents;
 };
 
 struct Article {
-    std::string to_string() const;
     std::string title;
     std::string author;
     std::string date;

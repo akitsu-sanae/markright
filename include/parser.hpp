@@ -3,14 +3,19 @@
 
 #include <deque>
 #include <fstream>
-#include "keika.hpp"
 
 struct Article;
+struct Section;
+struct Paragraph;
 
 struct Parser {
     explicit Parser(std::ifstream ifs);
     std::deque<std::string> input;
-    keika::Result<Article, std::string> parse();
+    Article parse();
+private:
+    Article parse_article();
+    Section parse_section();
+    Paragraph parse_paragraph();
 };
 
 #endif

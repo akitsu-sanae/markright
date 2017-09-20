@@ -2,10 +2,19 @@
 #include "codegen.hpp"
 #include "ast.hpp"
 
+std::string convert_to_xelatex(Paragraph const& paragraph) {
+    std::string result = R"(\par )";
+    for (auto const& statement : paragraph.statements)
+        result += statement;
+    result += "\n";
+    return result;
+}
+
 std::string convert_to_xelatex(Section const& section) {
     std::string result = "";
     result += util::format("\\section{{}}\n", section.title);
-    result += section.content + "\n";
+    for (auto const& content : section.contents)
+        result += convert_to_xelatex(content);
     return result;
 }
 

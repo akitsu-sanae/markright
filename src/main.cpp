@@ -16,6 +16,6 @@ int main(int argc, char* argv[]) {
     }
 
     Parser parser{std::ifstream{argv[1]}};
-    std::cout << convert_to_xelatex(parser.parse().ok()) << std::endl;
+    std::cout << convert_to_xelatex(parser.parse()) << std::endl;
 }
 

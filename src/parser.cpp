@@ -1,8 +1,6 @@
 #include "parser.hpp"
 #include "ast.hpp"
 
-using namespace keika;
-
 static void add_description(Article& article, std::string const& line) {
     auto pos = line.find_first_of(' ');
     auto desc_type = line.substr(0, pos);
@@ -25,7 +23,11 @@ Parser::Parser(std::ifstream ifs) {
     }
 }
 
-Result<Article, std::string> Parser::parse() {
+Article Parser::parse() {
+    return parse_article();
+}
+
+Article Parser::parse_article() {
 
     Article article;
 
@@ -35,17 +37,34 @@ Result<Article, std::string> Parser::parse() {
         input.pop_front();
     }
 
-    while (!input.empty()) {
-        if (input.front()[0] == '#') {
-            auto title = input.front().substr(1, input.front().size()-1);
-            article.sections.emplace_back();
-            article.sections.back().title = title;
-        } else {
-            article.sections.back().content += input.front();
-        }
-        input.pop_front();
-    }
-    return article;
+    while (!input.empty() && input.front()[0] == '#')
+        article.sections.push_back(parse_section());
+
+    if (!input.empty())
+        throw std::runtime_error{"unparsed: " + input.front()};
+
+   return article;
 }
 
+Section Parser::parse_section() {
+    Section section;
+    input.front().erase(0, 1); // first is '#'
+    section.title = input.front();
+    input.pop_front();
+
+    while (!input.empty() && input.front()[0] == ' ')
+        section.contents.push_back(parse_paragraph());
+
+    return section;
+}
+
+Paragraph Parser::parse_paragraph() {
+    Paragraph paragraph;
+    input.front().erase(0, 1); // first is ' '
+    while (!input.empty() && input.front()[0] != ' ' && input.front()[0] != '#') {
+        paragraph.statements.push_back(input.front());
+        input.pop_front();
+    }
+    return paragraph;
+}
 
