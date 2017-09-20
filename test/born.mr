@@ -1,0 +1,18 @@
+; markright's born
+; what this guarantee is:
+;    comment
+;    title/author/date description
+;    section
+;
+%title born
+%author akitsu sanae
+%date \date
+
+# here is title of Section
+
+here is contents
+
+# 2nd Section
+
+neko ni naritai
+

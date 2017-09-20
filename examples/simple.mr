@@ -1,0 +1,61 @@
+%title hoge
+%author fuga
+%date \date
+
+# MarkRight is ...
+
+MarkRight is a Markup Language for akitsu sanae.
+
+; here is comment
+
+# Common Syntax
+
+MarkMe support Markdown-like syntax.
+for example
+1. listing as you see
+    * hoge
+    * fuga
+    * piyo
+2. [link](http://example.com)
+3. [image](./test.png)
+4. **bold** *italic*
+5. horizntal rule
+-------
+
+> quitation
+
+# Extended Syntax
+
+## source code
+[code] {
+#include <iostream>
+int main() {
+    std::cout << "Hello, MarkMe!" << std::endl;
+}
+}
+
+## inline source code
+
+you can write inline code like [code: this].
+
+## proof tree
+
+[proof] {
+        --------------------------------------------- T-BOOL
+        \Gamma \vdash \mathit{true} : \mathit{bool}
+
+        --------------------------------- T-INT
+        \Gamma \vdash 1 : \mathit{int}
+
+            ------------------------------- T-INT
+            \Gamma \vdash 1 : \mathit{int}
+
+            -------------------------------- T-INT
+            \Gamma \vdash 2 : \mathit{int}
+        ----------------------------------- T-PLUS
+        \Gamma \vdash 1 + 2 : \mathit{int}
+    ---------------------------------------------------- T-IF
+    \Gamma \vdash if true then 1 else 1 + 2  : \mathit{int}
+}
+
+
