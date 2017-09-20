@@ -15,49 +15,36 @@ static void add_description(Article& article, std::string const& line) {
         article.date = line.substr(pos+1, line.size()-1);
 }
 
-Result<Article, std::string> Parser::parse() {
-    if (!input)
-        return Result<Article>::error("can not open input file");
-
+Parser::Parser(std::ifstream ifs) {
+    if (!ifs)
+        return;
     std::string line;
+    while (std::getline(ifs, line)) {
+        if (!line.empty() && line[0] != ';')
+            input.push_back(line);
+    }
+}
 
-    enum class Phase {
-        ArticleDesc,
-        Section,
-    } phase = Phase::ArticleDesc;
+Result<Article, std::string> Parser::parse() {
 
     Article article;
-    Section current_section;
-    while (std::getline(input, line)) {
-        if (line.empty())
-            continue;
-        if (line[0] == ';')
-            continue;
-        if (phase == Phase::ArticleDesc) {
-            switch (line[0]) {
-            case '%':
-                add_description(article, line);
-                break;
-            case '#': // first section
-                current_section.title = line.substr(1, line.size() - 1);
-                phase = Phase::Section;
-                break;
-            default:
-                return Result<Article>::error("invalid input");
-            }
-        } else if (phase == Phase::Section) {
-            if (line[0] == '#') {
-                article.sections.push_back(current_section);
-                current_section.title = line.substr(1, line.size() - 1);
-                current_section.content = "";
-                continue;
-            }
-            current_section.content += line;
-        } else {
-            throw std::logic_error{"invalid parse phase"};
-        }
+
+    // title, author, date
+    while (!input.empty() && input.front()[0] == '%') {
+        add_description(article, input.front());
+        input.pop_front();
     }
-    article.sections.push_back(current_section);
+
+    while (!input.empty()) {
+        if (input.front()[0] == '#') {
+            auto title = input.front().substr(1, input.front().size()-1);
+            article.sections.emplace_back();
+            article.sections.back().title = title;
+        } else {
+            article.sections.back().content += input.front();
+        }
+        input.pop_front();
+    }
     return article;
 }
 
