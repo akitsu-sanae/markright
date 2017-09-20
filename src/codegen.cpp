@@ -24,6 +24,7 @@ std::string convert_to_xelatex(Article const& article) {
     result += util::format("\\author{{}}\n", article.author);
     result += util::format("\\date{{}}\n", article.date);
 
+    result += "\\usepackage{indentfirst}\n";
     result += "\\usepackage{xltxtra}\n";
     result += "\\usepackage{bussproofs}\n";
 
