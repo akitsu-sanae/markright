@@ -20,6 +20,14 @@ std::string List::to_xelatex() const {
     return result;
 }
 
+std::string IndexedList::to_xelatex() const {
+    std::string result = "\\begin{enumerate}\n";
+    for (auto const& content : contents)
+        result += util::format("\\item {}\n", content->to_xelatex());
+    result += "\\end{enumerate}\n";
+    return result;
+}
+
 std::string Section::to_xelatex() const {
     std::string result = "";
     result += util::format("\\section{{}}\n", title);

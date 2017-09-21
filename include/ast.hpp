@@ -31,6 +31,7 @@ struct Statement : public InlineElement {
 struct BlockElement : public Ast {
     enum Type {
         Paragraph,
+        IndexedList,
         List
     };
     virtual Type type() const = 0;
@@ -48,6 +49,14 @@ struct List : public BlockElement {
     std::vector<util::ptr<InlineElement>> contents;
     Type type() const override {
         return Type::List;
+    }
+    std::string to_xelatex() const override;
+};
+
+struct IndexedList : public BlockElement {
+    std::vector<util::ptr<InlineElement>> contents;
+    Type type() const override {
+        return Type::IndexedList;
     }
     std::string to_xelatex() const override;
 };

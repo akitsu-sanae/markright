@@ -11,6 +11,7 @@ struct Section;
 struct BlockElement;
 struct Paragraph;
 struct List;
+struct IndexedList;
 struct InlineElement;
 struct Statement;
 
@@ -25,6 +26,7 @@ private:
     util::ptr<BlockElement> parse_block_element();
     util::ptr<Paragraph> parse_paragraph();
     util::ptr<List> parse_list();
+    util::ptr<IndexedList> parse_indexed_list();
 
     util::ptr<InlineElement> parse_inline_element();
     util::ptr<Statement> parse_statement();

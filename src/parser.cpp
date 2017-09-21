@@ -70,6 +70,8 @@ util::ptr<BlockElement> Parser::parse_block_element() {
     if (is_match(" "))
         return parse_paragraph();
     if (is_match("1."))
+        return parse_indexed_list();
+    if (is_match("*"))
         return parse_list();
     throw std::logic_error{"invalid input"};
 }
@@ -89,8 +91,8 @@ util::ptr<Paragraph> Parser::parse_paragraph() {
     return paragraph;
 }
 
-util::ptr<List> Parser::parse_list() {
-    auto list = std::make_unique<List>();
+util::ptr<IndexedList> Parser::parse_indexed_list() {
+    auto list = std::make_unique<IndexedList>();
     int count = 1;
     while (is_match(std::to_string(count) + ".")) {
         input.front().erase(0, 2);
@@ -104,12 +106,25 @@ util::ptr<List> Parser::parse_list() {
         return list;
 }
 
+util::ptr<List> Parser::parse_list() {
+    auto list = std::make_unique<List>();
+    while (is_match("*")) {
+        input.front().erase(0, 1);
+        util::trim_left(input.front());
+        list->contents.push_back(parse_inline_element());
+    }
+    if (list->contents.empty())
+        return nullptr;
+    else
+        return list;
+}
+
 util::ptr<InlineElement> Parser::parse_inline_element() {
     return parse_statement();
 }
 
 util::ptr<Statement> Parser::parse_statement() {
-    if (is_match("#", " ", "1."))
+    if (is_match("#", " ", "1.", "*"))
         return nullptr;
     auto statement = std::make_unique<Statement>(input.front());
     input.pop_front();
