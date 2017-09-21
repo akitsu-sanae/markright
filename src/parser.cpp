@@ -52,19 +52,60 @@ util::ptr<Section> Parser::parse_section() {
     section->title = input.front();
     input.pop_front();
 
-    while (!input.empty() && input.front()[0] == ' ')
-        section->contents.push_back(parse_paragraph());
+    while (!input.empty() && (input.front()[0] == ' ' || input.front()[0] == '1'))
+        section->contents.push_back(parse_block_element());
 
     return section;
+}
+
+util::ptr<BlockElement> Parser::parse_block_element() {
+    if (input.empty())
+        return nullptr;
+    switch (input.front()[0]) {
+    case ' ':
+        return parse_paragraph();
+    case '1':
+        return parse_list();
+    default:
+        throw std::logic_error{"invalid input"};
+    }
 }
 
 util::ptr<Paragraph> Parser::parse_paragraph() {
     auto paragraph = std::make_unique<Paragraph>();
     input.front().erase(0, 1); // first is ' '
-    while (!input.empty() && input.front()[0] != ' ' && input.front()[0] != '#') {
-        paragraph->contents.push_back(std::make_unique<Statement>(input.front()));
-        input.pop_front();
+    while (true) {
+        if (input.empty())
+            break;
+        if (input.front()[0] == ' ')
+            break;
+        if (input.front()[0] == '1' && input.front()[1] == '.')
+            break;
+        if (input.front()[0] == '#')
+            break;
+        paragraph->contents.push_back(parse_inline_element());
     }
     return paragraph;
+}
+
+util::ptr<List> Parser::parse_list() {
+    auto list = std::make_unique<List>();
+    int count = 1;
+    while (!input.empty() && input.front()[0] == '0'+count) {
+        input.front().erase(0, 2);
+        list->contents.push_back(parse_inline_element());
+        ++count;
+    }
+    return list;
+}
+
+util::ptr<InlineElement> Parser::parse_inline_element() {
+    return parse_statement();
+}
+
+util::ptr<Statement> Parser::parse_statement() {
+    auto statement = std::make_unique<Statement>(input.front());
+    input.pop_front();
+    return statement;
 }
 

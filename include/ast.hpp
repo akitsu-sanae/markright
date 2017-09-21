@@ -44,6 +44,14 @@ struct Paragraph : public BlockElement {
     std::string to_xelatex() const override;
 };
 
+struct List : public BlockElement {
+    std::vector<util::ptr<InlineElement>> contents;
+    Type type() const override {
+        return Type::List;
+    }
+    std::string to_xelatex() const override;
+};
+
 struct Section : public Ast {
     std::string title;
     std::vector<util::ptr<BlockElement>> contents;
