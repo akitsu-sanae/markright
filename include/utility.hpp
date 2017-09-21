@@ -27,6 +27,15 @@ inline static std::string format(std::string const& text, Head const& head, Tail
 template<typename T>
 using ptr = std::unique_ptr<T>;
 
+inline static std::string& trim_left(std::string& str) {
+    auto start = std::begin(str);
+    while (std::isspace(*start))
+        ++start;
+    str.erase(std::begin(str), start);
+    return str;
+}
+
+
 }
 
 #endif

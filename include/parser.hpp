@@ -28,6 +28,24 @@ private:
 
     util::ptr<InlineElement> parse_inline_element();
     util::ptr<Statement> parse_statement();
+
+    bool is_match() const {
+        return false;
+    }
+    template<typename ... Args>
+    bool is_match(std::string const& head, Args const& ... args) {
+        if (input.empty())
+            return false;
+        if (input.front().size() < head.size())
+            return false;
+        bool is_ok = true;
+        for (size_t i=0; i<head.size(); ++i)
+            is_ok &= head[i] == input.front()[i];
+        if (is_ok)
+            return true;
+
+        return is_match(args ...);
+    }
 };
 
 #endif
