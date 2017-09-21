@@ -5,6 +5,13 @@ std::string Statement::to_xelatex() const {
     return content;
 }
 
+std::string SubSection::to_xelatex() const {
+    std::string result = util::format("\\subsection{{}}\n", title);
+    for (auto const& content : contents)
+        result += content->to_xelatex() + "\n";
+    return result;
+}
+
 std::string Paragraph::to_xelatex() const {
     std::string result = R"(\par )";
     for (auto const& content : contents)

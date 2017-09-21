@@ -30,12 +30,22 @@ struct Statement : public InlineElement {
 
 struct BlockElement : public Ast {
     enum Type {
+        SubSection,
         Paragraph,
         IndexedList,
         List,
         Quote,
     };
     virtual Type type() const = 0;
+};
+
+struct SubSection : public BlockElement {
+    std::string title;
+    std::vector<util::ptr<BlockElement>> contents;
+    Type type() const override {
+        return Type::SubSection;
+    }
+    std::string to_xelatex() const override;
 };
 
 struct Paragraph : public BlockElement {

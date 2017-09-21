@@ -9,6 +9,7 @@
 struct Article;
 struct Section;
 struct BlockElement;
+struct SubSection;
 struct Paragraph;
 struct List;
 struct IndexedList;
@@ -25,6 +26,7 @@ private:
     util::ptr<Section> parse_section();
 
     util::ptr<BlockElement> parse_block_element();
+    util::ptr<SubSection> parse_subsection();
     util::ptr<Paragraph> parse_paragraph();
     util::ptr<List> parse_list();
     util::ptr<IndexedList> parse_indexed_list();

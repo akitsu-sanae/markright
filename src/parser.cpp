@@ -67,6 +67,8 @@ util::ptr<Section> Parser::parse_section() {
 util::ptr<BlockElement> Parser::parse_block_element() {
     if (input.empty())
         return nullptr;
+    if (is_match("##"))
+        return parse_subsection();
     if (is_match(" "))
         return parse_paragraph();
     if (is_match("1."))
@@ -76,6 +78,24 @@ util::ptr<BlockElement> Parser::parse_block_element() {
     if (is_match(">"))
         return parse_quote();
     throw std::logic_error{"invalid input"};
+}
+
+util::ptr<SubSection> Parser::parse_subsection() {
+    if (!is_match("##"))
+        return nullptr;
+    input.front().erase(0, 2); // remove '##'
+    util::trim_left(input.front());
+    auto subsection = std::make_unique<SubSection>();
+    subsection->title = input.front();
+    input.pop_front();
+
+    while (auto block = parse_block_element()) {
+        if (block)
+            subsection->contents.push_back(std::move(block));
+        else
+            break;
+    }
+    return subsection;
 }
 
 util::ptr<Paragraph> Parser::parse_paragraph() {
@@ -139,7 +159,7 @@ util::ptr<InlineElement> Parser::parse_inline_element() {
 }
 
 util::ptr<Statement> Parser::parse_statement() {
-    if (is_match("#", " ", "1.", "*", ">"))
+    if (is_match("#", " ", "1.", "*", ">", "##"))
         return nullptr;
     auto statement = std::make_unique<Statement>(input.front());
     input.pop_front();
