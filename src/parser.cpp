@@ -73,6 +73,8 @@ util::ptr<BlockElement> Parser::parse_block_element() {
         return parse_indexed_list();
     if (is_match("*"))
         return parse_list();
+    if (is_match(">"))
+        return parse_quote();
     throw std::logic_error{"invalid input"};
 }
 
@@ -119,12 +121,25 @@ util::ptr<List> Parser::parse_list() {
         return list;
 }
 
+util::ptr<Quote> Parser::parse_quote() {
+    auto list = std::make_unique<Quote>();
+    while (is_match(">")) {
+        input.front().erase(0, 1); // remove '>'
+        util::trim_left(input.front());
+        list->contents.push_back(parse_inline_element());
+    }
+    if (list->contents.empty())
+        return nullptr;
+    else
+        return list;
+}
+
 util::ptr<InlineElement> Parser::parse_inline_element() {
     return parse_statement();
 }
 
 util::ptr<Statement> Parser::parse_statement() {
-    if (is_match("#", " ", "1.", "*"))
+    if (is_match("#", " ", "1.", "*", ">"))
         return nullptr;
     auto statement = std::make_unique<Statement>(input.front());
     input.pop_front();

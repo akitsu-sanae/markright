@@ -28,6 +28,14 @@ std::string IndexedList::to_xelatex() const {
     return result;
 }
 
+std::string Quote::to_xelatex() const {
+    std::string result = "\\begin{quotation}\n";
+    for (auto const& content : contents)
+        result += content->to_xelatex() + "\n";
+    result += "\\end{quotation}\n";
+    return result;
+}
+
 std::string Section::to_xelatex() const {
     std::string result = "";
     result += util::format("\\section{{}}\n", title);
