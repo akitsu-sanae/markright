@@ -1,0 +1,17 @@
+; markright slide test
+%title slide test
+%author akitsu sanae
+%date \today
+%slide-mode
+
+# hoge
+
+## neko
+ ninaritai
+
+# fuga
+
+* inu
+* demo
+* iine
+

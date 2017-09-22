@@ -11,6 +11,10 @@ static void add_description(Article& article, std::string const& line) {
         article.author = line.substr(pos+1, line.size()-1);
     else if (desc_type == "\%date")
         article.date = line.substr(pos+1, line.size()-1);
+    else if (desc_type == "\%slide-mode")
+        article.is_slide = true;
+    else
+        throw std::logic_error{"invalid desc: " + desc_type};
 }
 
 Parser::Parser(std::ifstream ifs) {
