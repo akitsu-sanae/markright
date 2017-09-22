@@ -1,0 +1,19 @@
+%title list
+%author akitsu sanae
+%date \today
+
+# this is a code block test
+
+ C++ Code
+[code] {
+#include <iostream>
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+}
+}
+
+ OCaml Code
+[code] {
+let () = print_endline "Hello, World!"
+}
+
