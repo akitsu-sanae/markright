@@ -79,6 +79,8 @@ util::ptr<BlockElement> Parser::parse_block_element() {
         return parse_quote();
     if (is_match("[code]"))
         return parse_codeblock();
+    if (is_match("#")) // section
+        return nullptr;
     throw std::logic_error{"invalid input"};
 }
 
@@ -206,6 +208,8 @@ util::ptr<InlineElement> Parser::parse_inline_element() {
 
 util::ptr<Statement> Parser::parse_statement() {
     if (is_match("#", " ", "1.", "*", ">", "[code]", "##"))
+        return nullptr;
+    if (input.empty())
         return nullptr;
     auto statement = std::make_unique<Statement>(input.front());
     input.pop_front();
