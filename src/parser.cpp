@@ -77,6 +77,8 @@ util::ptr<BlockElement> Parser::parse_block_element() {
         return parse_list();
     if (is_match(">"))
         return parse_quote();
+    if (is_match("[code]"))
+        return parse_codeblock();
     throw std::logic_error{"invalid input"};
 }
 
@@ -154,12 +156,56 @@ util::ptr<Quote> Parser::parse_quote() {
         return list;
 }
 
+auto calc_block_body(std::deque<std::string> const& input) {
+    auto start = input.front().begin();
+    while (*start != '{')
+        ++start;
+    int  brace_count = 0;
+    int count = 0;
+    for (auto const& line : input) {
+        for (auto it=line.begin(); it!=line.end(); ++it) {
+            if (*it == '{')
+                ++brace_count;
+            if (*it == '}')
+                --brace_count;
+            if (brace_count == 0 && it > start)
+                return std::make_pair(start, it);
+        }
+        count++;
+    }
+    throw std::logic_error{"code block is not closed"};
+}
+
+util::ptr<CodeBlock> Parser::parse_codeblock() {
+    input.front().erase(0, 6); // remove '[code]'
+
+    auto code_body = calc_block_body(input);
+    std::string content{code_body.first + 1, input.front().cend()};
+    input.pop_front();
+
+    while (true) {
+        if (input.front().begin() <= code_body.second && code_body.second < input.front().end())
+            break;
+        content += input.front() + "\n";
+        input.pop_front();
+    }
+    auto lastline_length = code_body.second - input.front().begin();
+    content += input.front().substr(0, lastline_length);
+    input.front().erase(0, lastline_length + 1);
+    if (input.front().empty())
+        input.pop_front();
+
+    auto code = std::make_unique<CodeBlock>();
+    code->source_code = content;
+    return code;
+}
+
 util::ptr<InlineElement> Parser::parse_inline_element() {
     return parse_statement();
 }
 
 util::ptr<Statement> Parser::parse_statement() {
-    if (is_match("#", " ", "1.", "*", ">", "##"))
+    if (is_match("#", " ", "1.", "*", ">", "[code]", "##"))
         return nullptr;
     auto statement = std::make_unique<Statement>(input.front());
     input.pop_front();

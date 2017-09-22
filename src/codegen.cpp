@@ -43,6 +43,13 @@ std::string Quote::to_xelatex() const {
     return result;
 }
 
+std::string CodeBlock::to_xelatex() const {
+    std::string result = "\\begin{lstlisting}\n";
+    result += source_code;
+    result += "\\end{lstlisting}\n";
+    return result;
+}
+
 std::string Section::to_xelatex() const {
     std::string result = "";
     result += util::format("\\section{{}}\n", title);
@@ -60,6 +67,9 @@ std::string Article::to_xelatex() const {
     result += "\\usepackage{indentfirst}\n";
     result += "\\usepackage{xltxtra}\n";
     result += "\\usepackage{bussproofs}\n";
+
+    result += "\\usepackage{listings}";
+    result += "\\lstset{basicstyle={\\ttfamily}}";
 
     result += "\\setmainfont{IPAMincho}\n";
     result += "\\setsansfont{IPAGothic}\n";

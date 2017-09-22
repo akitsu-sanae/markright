@@ -35,6 +35,7 @@ struct BlockElement : public Ast {
         IndexedList,
         List,
         Quote,
+        CodeBlock
     };
     virtual Type type() const = 0;
 };
@@ -76,6 +77,14 @@ struct Quote : public BlockElement {
     std::vector<util::ptr<InlineElement>> contents;
     Type type() const override {
         return Type::Quote;
+    }
+    std::string to_xelatex() const override;
+};
+
+struct CodeBlock : public BlockElement {
+    std::string source_code;
+    Type type() const override {
+        return Type::CodeBlock;
     }
     std::string to_xelatex() const override;
 };
