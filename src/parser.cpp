@@ -97,7 +97,8 @@ util::ptr<SubSection> Parser::parse_subsection() {
     subsection->title = input.front();
     input.pop_front();
 
-    while (auto block = parse_block_element()) {
+    while (!is_match("##")) {
+        auto block = parse_block_element();
         if (block)
             subsection->contents.push_back(std::move(block));
         else
