@@ -41,7 +41,7 @@ run: $(TARGET)
 test: $(TARGET)
 	$(foreach file, $(TEST_FILES), \
 		echo "testing: " $(file); \
-		./build/markright $(file) > $(file:.mr=.tex) ||  echo "\033[31mtest fail markright to xelatex at " $(file) "\033[39m" || exit 50; \
+		./build/markright $(file) -o $(file:.mr=.tex) ||  echo "\033[31mtest fail markright to xelatex at " $(file) "\033[39m" || exit 50; \
 	    ) \
 	rm -f test/*.tex *.pdf *.aux *.log
 

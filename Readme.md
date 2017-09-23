@@ -6,6 +6,10 @@
 
 run `make`
 
+# How to use
+
+`markright [input filename] -o [output filename]`
+
 # Sample
 
 See `examples/simple.mr` or `test/*.mr`
