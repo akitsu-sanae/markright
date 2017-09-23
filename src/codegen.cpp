@@ -61,7 +61,7 @@ std::string CodeBlock::to_xelatex(CodeGenInfo const&) const {
 std::string Section::to_xelatex(CodeGenInfo const& info) const {
     std::string result;
     if (info.is_slide) {
-        result = util::format("\\begin{{}}{{}}\n", "frame", title);
+        result = util::format("\\begin{{}}[fragile]{{}}\n", "frame", title);
         for (auto const& content: contents)
             result += content->to_xelatex(info);
         result += util::format("\\end{{}}\n", "frame");
@@ -91,7 +91,7 @@ std::string Article::to_xelatex(CodeGenInfo const& info) const {
     result += "\\usepackage{bussproofs}\n";
 
     result += "\\usepackage{listings}";
-    result += "\\lstset{basicstyle={\\ttfamily}}";
+    result += "\\lstset{basicstyle={\\ttfamily}, frame={tblr}}";
 
     result += "\\setmainfont{IPAMincho}\n";
     result += "\\setsansfont{IPAGothic}\n";
