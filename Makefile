@@ -39,7 +39,7 @@ run: $(TARGET)
 
 .PHONY: test
 test: $(TARGET)
-	$(foreach file, $(TEST_FILES), \
+	@$(foreach file, $(TEST_FILES), \
 		echo "testing: " $(file); \
 		./build/markright $(file) -o $(file:.mr=.tex) ||  echo "\033[31mtest fail markright to xelatex at " $(file) "\033[39m" || exit 50; \
 	    ) \
