@@ -83,6 +83,8 @@ util::ptr<BlockElement> Parser::parse_block_element() {
         return parse_quote();
     if (is_match("[code]"))
         return parse_codeblock();
+    if (is_match("[proof]"))
+        return parse_prooftree();
     if (is_match("#")) // section
         return nullptr;
     throw std::logic_error{"invalid input"};
@@ -207,12 +209,55 @@ util::ptr<CodeBlock> Parser::parse_codeblock() {
     return code;
 }
 
+#include <iostream>
+void debug(std::deque<std::string> const& input) {
+    std::cout << "---------------------------" << std::endl;
+    for (auto const& line : input)
+        std::cout << line << std::endl;
+}
+
+util::ptr<ProofTree> Parser::parse_prooftree() {
+    input.front().erase(0, 7); // remove '[proof]'
+    while (is_match(" "))
+        input.front().erase(0, 1);
+    if (!is_match("{"))
+        throw std::logic_error{"expected is '{', but " + input.front() + " comes..."};
+    input.pop_front();
+
+    auto proof = std::make_unique<ProofTree>();
+    util::trim_left(input.front());
+    while (is_match("[premise]")) {
+        input.front().erase(0, 9); // erase [premise]
+        util::trim_left(input.front());
+        proof->premises.push_back(input.front());
+        input.pop_front();
+        util::trim_left(input.front());
+    }
+    if (is_match("[label]")) {
+        input.front().erase(0, 7); // erase [label]
+        proof->rule_name = input.front();
+        input.pop_front();
+        util::trim_left(input.front());
+    }
+    if (!is_match("[conclusion]"))
+        throw std::logic_error{"expected is [conclusion], but " + input.front() + " comes..."};
+    input.front().erase(0, 12); // erase [conclusion]
+    util::trim_left(input.front());
+    proof->conclusion = input.front();
+    input.pop_front();
+
+    if (!is_match("}"))
+        throw std::logic_error{"expected is '}', but " + input.front() + " comes ..."};
+    input.pop_front();
+    return proof;
+}
+
 util::ptr<InlineElement> Parser::parse_inline_element() {
     return parse_statement();
 }
 
 util::ptr<Statement> Parser::parse_statement() {
-    if (is_match("#", " ", "1.", "*", ">", "[code]", "##"))
+    if (is_match("#", " ", "1.", "*", ">", "[code]", "[proof]", "##"))
         return nullptr;
     if (input.empty())
         return nullptr;

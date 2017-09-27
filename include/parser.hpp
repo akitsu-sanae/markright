@@ -15,6 +15,7 @@ struct List;
 struct IndexedList;
 struct Quote;
 struct CodeBlock;
+struct ProofTree;
 struct InlineElement;
 struct Statement;
 
@@ -33,6 +34,7 @@ private:
     util::ptr<IndexedList> parse_indexed_list();
     util::ptr<Quote> parse_quote();
     util::ptr<CodeBlock> parse_codeblock();
+    util::ptr<ProofTree> parse_prooftree();
 
     util::ptr<InlineElement> parse_inline_element();
     util::ptr<Statement> parse_statement();

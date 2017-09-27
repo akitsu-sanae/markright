@@ -39,7 +39,8 @@ struct BlockElement : public Ast {
         IndexedList,
         List,
         Quote,
-        CodeBlock
+        CodeBlock,
+        ProofTree,
     };
     virtual Type type() const = 0;
 };
@@ -89,6 +90,16 @@ struct CodeBlock : public BlockElement {
     std::string source_code;
     Type type() const override {
         return Type::CodeBlock;
+    }
+    std::string to_xelatex(CodeGenInfo const&) const override;
+};
+
+struct ProofTree : public BlockElement {
+    std::string rule_name;
+    std::vector<std::string> premises;
+    std::string conclusion;
+    Type type() const override {
+        return Type::ProofTree;
     }
     std::string to_xelatex(CodeGenInfo const&) const override;
 };

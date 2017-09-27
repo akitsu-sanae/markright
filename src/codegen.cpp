@@ -58,6 +58,35 @@ std::string CodeBlock::to_xelatex(CodeGenInfo const&) const {
     return result;
 }
 
+std::string ProofTree::to_xelatex(CodeGenInfo const&) const {
+    std::string result = "\\begin{prooftree}\n";
+    for (auto const& premise : premises)
+        result += util::format("\\AxiomC{{}}\n", premise);
+    if (!rule_name.empty())
+        result += util::format("\\RightLabel{{}}\n", rule_name);
+    switch (premises.size()) {
+    case 1:
+        result += util::format("\\UnaryInfC{{}}\n", conclusion);
+        break;
+    case 2:
+        result += util::format("\\BinaryInfC{{}}\n", conclusion);
+        break;
+    case 3:
+        result += util::format("\\TrinaryInfC{{}}\n", conclusion);
+        break;
+    case 4:
+        result += util::format("\\QuaternaryInfC{{}}\n", conclusion);
+        break;
+    case 5:
+        result += util::format("\\QuinaryInfC{{}}\n", conclusion);
+        break;
+    default:
+        throw std::logic_error{"proof tree error: too many premises"};
+    }
+    result += util::format("\\end{prooftree}\n");
+    return result;
+}
+
 std::string Section::to_xelatex(CodeGenInfo const& info) const {
     std::string result;
     if (info.is_slide) {
