@@ -1,0 +1,14 @@
+%title proof
+%author akitsu sanae
+
+# this is a proof tree test
+
+ MP
+[proof] {
+    [premise] P
+    [premise] P -> Q
+    [label] MP
+    [conclusion] Q
+}
+
+
